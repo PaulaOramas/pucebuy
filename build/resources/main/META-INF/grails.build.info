@@ -1,0 +1,6 @@
+#Sat, 28 Jun 2025 17:56:08 -0500
+
+info.app.version=0.1
+info.app.name=pucebuy
+grails.env=development
+info.app.grailsVersion=3.3.18
