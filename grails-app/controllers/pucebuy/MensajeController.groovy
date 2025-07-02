@@ -4,26 +4,18 @@ class MensajeController {
 
     def chats() {
         def usuario = session.usuario
-        if (!usuario) {
-            flash.message = "Debes iniciar sesión"
-            redirect(controller: 'login', action: 'index')
-            return
-        }
-
-        // Buscar todos los mensajes donde el usuario es emisor o receptor
-        def mensajes = Mensaje.createCriteria().list {
+        // Consulta todos los usuarios con los que el usuario ha tenido conversación
+        def receptores = Mensaje.createCriteria().list {
             or {
                 eq("emisor", usuario)
                 eq("receptor", usuario)
             }
-        }
-
-        // Obtener todos los usuarios con los que ha conversado (distintos a sí mismo)
-        def usuariosConversados = mensajes.collect {
-            it.emisor == usuario ? it.receptor : it.emisor
-        }.findAll { it != usuario }.unique()
-
-        [receptores: usuariosConversados]
+            projections {
+                property("emisor")
+                property("receptor")
+            }
+        }.flatten().unique().findAll { it.id != usuario.id }
+        [receptores: receptores]
     }
 
     def conversacion() {

@@ -8,57 +8,147 @@
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #fafafa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f6fb;
+            min-height: 100vh;
         }
-
         .top-banner {
-            background-color: #e6f1fc;
-            padding: 15px;
+            background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+            padding: 25px 0 15px 0;
             text-align: center;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
         }
-
         .top-banner img {
-            width: 60px;
+            width: 70px;
+            margin-bottom: 10px;
         }
-
         .top-banner h3 {
-            margin-top: 10px;
+            margin: 0;
+            font-size: 1.5em;
+            font-weight: 600;
+            letter-spacing: 1px;
         }
-
-        form {
-            max-width: 400px;
-            margin: 30px auto 80px auto;
+        .form-card, form {
+            max-width: 540px; /* antes 400px */
+            width: 100%;
+            margin: 30px auto 90px auto;
+            background: #fff;
+            border-radius: 15px;
+            padding: 32px 28px 28px 28px; /* más espacio interno */
+            box-shadow: 0 2px 12px rgba(25, 118, 210, 0.07);
+            box-sizing: border-box;
+        }
+        .form-card h2, form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1976d2;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+        label {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 4px;
+            font-weight: bold;
+            color: #1976d2;
+        }
+        input, select, textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #b0bec5;
+            font-size: 15px;
             background: #f9f9f9;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 0 10px #ddd;
+            transition: border 0.2s;
+            margin-bottom: 6px;
         }
-        label { display: block; margin-top: 10px; }
-        input, select { width: 100%; padding: 8px; margin-top: 4px; border-radius: 6px; border: 1px solid #ccc; }
-        button { margin-top: 15px; width: 100%; }
-
+        input:focus, select:focus {
+            border: 1.5px solid #1976d2;
+            outline: none;
+        }
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: background 0.2s;
+        }
+        button[type="submit"]:hover {
+            background: #1565c0;
+        }
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: #f9f9f9;
+            background: #fff;
             display: flex;
             justify-content: space-around;
-            border-top: 1px solid #ddd;
-            padding: 10px 0;
+            border-top: 1.5px solid #b0bec5;
+            padding: 16px 0 10px 0;
+            z-index: 100;
+            box-shadow: 0 -2px 16px rgba(25, 118, 210, 0.07);
+            font-size: 1.18em;
         }
-
         .bottom-nav div, .bottom-nav a {
             text-align: center;
-            font-size: 12px;
-            color: #444;
+            font-size: 1.13em;
+            color: #1976d2;
+            font-weight: 600;
+            line-height: 1.3;
+            padding: 0 10px;
+            transition: color 0.2s, background 0.2s;
+            border-radius: 10px;
+            min-width: 70px;
         }
-
-        .bottom-nav .active {
-            color: black;
+        .bottom-nav .active, .bottom-nav a.active {
+            color: #0d47a1;
             font-weight: bold;
+            background: #e3eaf6;
+        }
+        .bottom-nav div:hover, .bottom-nav a:hover {
+            background: #e3eaf6;
+            color: #1565c0;
+        }
+        .flash-success {
+            background:#d4edda;
+            color:#155724;
+            border:1px solid #c3e6cb;
+            padding:10px;
+            border-radius:8px;
+            margin-bottom:15px;
+            text-align:center;
+        }
+        .flash-error {
+            background:#f8d7da;
+            color:#721c24;
+            border:1px solid #f5c6cb;
+            padding:10px;
+            border-radius:8px;
+            margin-bottom:15px;
+        }
+        @media (max-width: 700px) {
+            .form-card, form {
+                max-width: 98vw;
+                padding: 10px 4vw 18vw 4vw;
+            }
+            .bottom-nav {
+                font-size: 1em;
+                padding: 10px 0 8px 0;
+            }
+            .bottom-nav div, .bottom-nav a {
+                font-size: 1em;
+                min-width: 50px;
+                padding: 0 4px;
+            }
         }
     </style>
     <script>
@@ -124,7 +214,6 @@
                 🏠<br>Inicio
             </g:link>
         </div>
-        <div>🛒<br>Marketplace</div>
         <div>
             <a href="${createLink(controller:'articulo', action:'publicar')}" style="text-decoration:none; color:inherit;">
                 ➕<br>Publicar
