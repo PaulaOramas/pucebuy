@@ -125,6 +125,24 @@
     <h3>Encuentra lo que necesitas en PuceBuy 🎯</h3>
 </div>
 
+<!-- Buscador de artículos -->
+<div style="padding: 0 15px 15px 15px; text-align:center;">
+    <form id="buscadorForm" method="get" action="${createLink(controller:'home', action:'inicio')}">
+        <input 
+            type="text" 
+            id="buscadorInput"
+            name="q" 
+            value="${params.q ?: ''}" 
+            placeholder="Buscar artículos..." 
+            style="width:75%; padding:8px; border-radius:8px; border:1px solid #ccc; font-size:15px;"
+        />
+        <button 
+            type="submit" 
+            style="padding:8px 16px; border-radius:8px; border:none; background:#1976d2; color:white; font-size:15px; cursor:pointer;"
+        >Buscar</button>
+    </form>
+</div>
+
 <!-- Categorías -->
 <div class="categorias">
     <h4>Categorías</h4>
@@ -150,7 +168,7 @@
 <div class="categorias">
     <h4>Publicaciones</h4>
 </div>
-<div class="cards">
+<div class="cards" id="cardsContainer">
     <g:each in="${articulos}" var="art">
         <div class="card">
             <a href="${createLink(controller:'articulo', action:'detalle', id: art.id)}" style="text-decoration:none; color:inherit;">
@@ -160,7 +178,34 @@
             </a>
         </div>
     </g:each>
+    <g:if test="${!articulos || articulos.size() == 0}">
+        <div style="width:100%;text-align:center;color:#888;">No se encontraron resultados.</div>
+    </g:if>
 </div>
+
+<script>
+function buscarAjax() {
+    const query = document.getElementById('buscadorInput').value;
+    fetch('${createLink(controller:"home", action:"buscarAjaxHtml")}?q=' + encodeURIComponent(query), {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(resp => resp.text())
+    .then(html => {
+        document.getElementById('cardsContainer').innerHTML = html;
+    });
+}
+
+// Evento para enviar al escribir
+document.getElementById('buscadorInput').addEventListener('input', function() {
+    buscarAjax();
+});
+
+// (Opcional) Mantén el submit por si el usuario presiona Enter
+document.getElementById('buscadorForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    buscarAjax();
+});
+</script>
 
 <!-- Menú inferior -->
 <div class="bottom-nav">

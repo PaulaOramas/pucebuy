@@ -77,6 +77,18 @@
         <div class="info"><span class="label">Email:</span> ${usuario.email}</div>
         <div class="info"><span class="label">Teléfono:</span> ${usuario.telefono}</div>
         <!-- Agrega más campos si tu dominio Usuario los tiene -->
+        <div style="margin-top:20px;">
+            <a href="${createLink(controller:'articulo', action:'publicaciones')}" 
+               style="display:inline-block; padding:10px 20px; background:#1976d2; color:white; border-radius:8px; text-decoration:none; font-weight:bold;">
+                Ver mis publicaciones
+            </a>
+        </div>
+        <div style="margin-top:15px;">
+            <g:link controller="login" action="logout"
+                style="display:inline-block; padding:10px 20px; background:#e53935; color:white; border-radius:8px; text-decoration:none; font-weight:bold;">
+                Cerrar sesión
+            </g:link>
+        </div>
     </div>
     <div class="bottom-nav">
 <div class="active">

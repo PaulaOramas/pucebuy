@@ -71,24 +71,30 @@ class ArticuloController {
     }
 
     def publicar() {
-        [usuarios: Usuario.list(), categorias: Categoria.list()]
+        [categorias: Categoria.list()]
     }
 
     def save() {
+        if (!session.usuario) {
+            flash.message = "Debes iniciar sesión para publicar."
+            redirect(controller: "login", action: "index")
+            return
+        }
+
         def articulo = new Articulo()
         articulo.nombre = params.nombre
         articulo.precio = params.precio as BigDecimal
         articulo.estado = params.estado
         articulo.imagen = params.imagen
-        articulo.usuario = Usuario.get(params['usuario.id'] as Long)
+        articulo.usuario = session.usuario
         articulo.categoria = Categoria.get(params['categoria.id'] as Long)
 
         if (articulo.save(flush: true)) {
-            flash.message = "Artículo publicado correctamente"
-            redirect(controller: "home", action: "inicio")
+            flash.message = "Artículo publicado correctamente."
+            redirect(controller: "articulo", action: "publicar")
         } else {
-            flash.message = "Error al publicar el artículo"
-            render(view: "publicar", model: [articulo: articulo, usuarios: Usuario.list(), categorias: Categoria.list()])
+            // Muestra los errores en la vista
+            render(view: "publicar", model: [articulo: articulo, categorias: Categoria.list(), errores: articulo.errors])
         }
     }
 
@@ -97,6 +103,76 @@ class ArticuloController {
         if (!articulo) {
             flash.message = "Artículo no encontrado"
             redirect(controller: "home", action: "inicio")
+            return
+        }
+        [articulo: articulo]
+    }
+
+    def publicaciones() {
+        def usuario = session.usuario // o usa springSecurityService.currentUser
+        def misArticulos = Articulo.findAllByUsuario(usuario)
+        [misArticulos: misArticulos]
+    }
+
+    def detallePropio(Long id) {
+        def articulo = Articulo.get(id)
+        def usuario = session.usuario // o usa springSecurityService.currentUser
+        if (!articulo || articulo.usuario?.id != usuario?.id) {
+            flash.message = "No tienes permiso para ver este artículo."
+            redirect(controller: 'home', action: 'inicio')
+            return
+        }
+        [articulo: articulo]
+    }
+
+    def editar(Long id) {
+        def articulo = Articulo.get(id)
+        def usuario = session.usuario
+        if (!articulo || articulo.usuario?.id != usuario?.id) {
+            flash.message = "No tienes permiso para editar este artículo."
+            redirect(controller: 'home', action: 'inicio')
+            return
+        }
+        [articulo: articulo]
+    }
+
+    def actualizar(Long id) {
+        def articulo = Articulo.get(id)
+        def usuario = session.usuario
+        if (!articulo || articulo.usuario?.id != usuario?.id) {
+            flash.message = "No tienes permiso para editar este artículo."
+            redirect(controller: 'home', action: 'inicio')
+            return
+        }
+        articulo.properties = params
+        if (articulo.save(flush: true)) {
+            flash.message = "Artículo actualizado correctamente."
+            // Cambia esta línea:
+            redirect(action: 'editarBorrar', id: articulo.id)
+        } else {
+            render(view: 'editar', model: [articulo: articulo])
+        }
+    }
+
+    def borrar() {
+        def articulo = Articulo.get(params.id)
+        def usuario = session.usuario
+        if (!articulo || articulo.usuario?.id != usuario?.id) {
+            flash.message = "No tienes permiso para borrar este artículo."
+            redirect(controller: 'home', action: 'inicio')
+            return
+        }
+        articulo.delete(flush: true)
+        flash.message = "Artículo borrado correctamente."
+        redirect(controller: 'articulo', action: 'publicaciones')
+    }
+
+    def editarBorrar(Long id) {
+        def articulo = Articulo.get(id)
+        def usuario = session.usuario // o usa springSecurityService.currentUser si usas Spring Security
+        if (!articulo || articulo.usuario?.id != usuario?.id) {
+            flash.message = "No tienes permiso para ver este artículo."
+            redirect(controller: 'articulo', action: 'publicaciones')
             return
         }
         [articulo: articulo]

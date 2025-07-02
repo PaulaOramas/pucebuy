@@ -89,6 +89,11 @@
         <img src="${articulo.imagen ?: resource(dir:'images', file:'producto.png')}" alt="${articulo.nombre}">
         <h2>${articulo.nombre}</h2>
         <div class="precio">$${articulo.precio}</div>
+        <g:if test="${articulo.precio == 0}">
+            <div style="color:#e67e22; font-weight:bold; margin-bottom:10px;">
+                Este producto es para <span style="text-decoration:underline;">intercambio</span>, no venta.
+            </div>
+        </g:if>
         <div class="info"><span class="label">Estado:</span> ${articulo.estado}</div>
         <div class="info"><span class="label">Categoría:</span> ${articulo.categoria?.nombre}</div>
         <div class="info"><span class="label">Publicado por:</span> ${articulo.usuario?.nombre}</div>
